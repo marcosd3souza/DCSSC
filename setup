@@ -1,0 +1,33 @@
+dados simulados (3):
+
+k         = 5
+n_feat    = [2, 10]
+n_samples = 1000
+std       = [ 0.5, 1.0, 2.5 ]
+
+dados reais (5):
+
+MNIST:   4000 x 784   (28x28)   10  classes
+coil20:  1440 x 1024  (32x32)   20  classes
+YaleB:   2414 x 1024  (32x32)   38  classes
+ORL:     400  x 1024  (32x32)   40  classes
+coil100: 7200 x 1024  (32x32)   100 classes
+
+métodos (11):
+
+LRR_L1    2012 (Python)
+LRR_L2    2012 (Python)
+SSC       2013 (Python)
+EDSC      2014 (Matlab)
+ENSC      2016 (Python)
+PARTY     2016 (Python)
+DSC_Net   2017 (Python)
+BDR       2018 (Matlab)
+DASC      2018 (Python)
+ODSC      2021 (Python)
+EDESC     2022 (Python)
+____________________________________________________________
+NTD_VAE # ours
+NMF_VAE # ours
+
+n_repeat clustering: 30
