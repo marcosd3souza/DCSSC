@@ -67,31 +67,17 @@ def run_methods(method, X, name, X_img, X_input, X_last_layer):
         Z = EDESC_exec(X).detach().numpy()
     # -------------------------- OURS
     elif method == 'M-DSC_Vae':
-        # D = pairwise_distances(X)
-        # G = kneighbors_graph(D, n_neighbors=5, mode='connectivity').toarray()
+        D = pairwise_distances(X)
+        S = MatrixFactorization(None, D).similarity_graph()
+        # D_S = pairwise_distances(S)
+        # D_W[D_W > 1.0] = 1
+        # D_W[D_W < 1.0] = 0
+        # S = kneighbors_graph(D_W, n_neighbors=5, mode='connectivity').toarray()
+
+        Z = SubspaceRepresentation(S).vae_transform()
+        # D_Z = pairwise_distances(Z)
         #
-        # plt.imshow(G)
-        # plt.show()
 
-        D_factored, _ = MatrixFactorization(X).NMF()
-        # plt.imshow(D_factored)
-        # plt.show()
-
-        # Z = D_factored
-        Z = SubspaceRepresentation(D_factored).vae_transform()
-        # Z = Z.dot(Z.T)
-        # plt.imshow(D_new)
-        # plt.show()
-
-        # Z, _ = MatrixFactorization(D_new).NMF()
-        # Z = D * Z
-
-        # Z = np.nan_to_num(Z)
-        # Z = np.sort(Z, axis=0)
-        # Z = kneighbors_graph(Z, n_neighbors=5).toarray()
-
-        # plt.imshow(Z)
-        # plt.show()
     elif method == 'T-DSC_Vae':
         D, _ = MatrixFactorization(X).NTD()
 
@@ -187,23 +173,23 @@ def _get_real_data():
     YaleB_last_layer = 64
 
     return [
-        (coil20_df, coil20_labels, coil20_img, coil20_input, coil20_last_layer, 'COIL20'),
-        (mnist_df, mnist_labels, mnist_img, mnist_input, mnist_last_layer, 'MNIST'),
-        (orl_df, orl_labels, orl_img, orl_input, orl_last_layer, 'ORL'),
+        # (coil20_df, coil20_labels, coil20_img, coil20_input, coil20_last_layer, 'COIL20'),
+        # (mnist_df, mnist_labels, mnist_img, mnist_input, mnist_last_layer, 'MNIST'),
+        # (orl_df, orl_labels, orl_img, orl_input, orl_last_layer, 'ORL'),
         (YaleB_df, YaleB_labels, YaleB_img, YaleB_input, YaleB_last_layer, 'YaleB'),
-        (coil100_df, coil100_labels, coil100_img, coil100_input, coil100_last_layer, 'COIL100')
+        # (coil100_df, coil100_labels, coil100_img, coil100_input, coil100_last_layer, 'COIL100')
     ]
 
 
 def _get_simulated_data(k=10):
-    n_samples = 500
+    n_samples = 150
 
     # std=5
-    X_0, y_0_true = make_blobs(n_samples=n_samples, cluster_std=5.0, centers=k, n_features=64)
+    X_0, y_0_true = make_blobs(n_samples=n_samples, cluster_std=5.0, centers=k, n_features=2)
 
-    X_reduced = TSNE(n_components=2, learning_rate='auto', init='random').fit_transform(X_0)
+    # X_reduced = TSNE(n_components=2, learning_rate='auto', init='random').fit_transform(X_0)
     plt.figure()
-    plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=y_0_true)
+    plt.scatter(X[:, 0], X[:, 1], c=y_0_true)
     plt.title(f'10 clusters (std=5.0)')
     plt.savefig(f'results/figs/baseline_5.png')
 
@@ -212,10 +198,10 @@ def _get_simulated_data(k=10):
     y_0_true = _sorted[:, 0]
 
     # std=10
-    X_1, y_1_true = make_blobs(n_samples=n_samples, cluster_std=10.0, centers=k, n_features=64)
-    X_reduced = TSNE(n_components=2, learning_rate='auto', init='random').fit_transform(X_1)
+    X_1, y_1_true = make_blobs(n_samples=n_samples, cluster_std=10.0, centers=k, n_features=2)
+    # X_reduced = TSNE(n_components=2, learning_rate='auto', init='random').fit_transform(X_1)
     plt.figure()
-    plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=y_1_true)
+    plt.scatter(X[:, 0], X[:, 1], c=y_1_true)
     plt.title(f'10 clusters (std=10.0)')
     plt.savefig(f'results/figs/baseline_10.png')
 
@@ -224,10 +210,10 @@ def _get_simulated_data(k=10):
     y_1_true = _sorted[:, 0]
 
     # std=15
-    X_2, y_2_true = make_blobs(n_samples=n_samples, cluster_std=15.0, centers=k, n_features=64)
-    X_reduced = TSNE(n_components=2, learning_rate='auto', init='random').fit_transform(X_2)
+    X_2, y_2_true = make_blobs(n_samples=n_samples, cluster_std=15.0, centers=k, n_features=2)
+    # X_reduced = TSNE(n_components=2, learning_rate='auto', init='random').fit_transform(X_2)
     plt.figure()
-    plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=y_2_true)
+    plt.scatter(X[:, 0], X[:, 1], c=y_2_true)
     plt.title(f'10 clusters (std=15.0)')
     plt.savefig(f'results/figs/baseline_15.png')
 
@@ -242,14 +228,14 @@ if __name__ == "__main__":
     methods = [
         # 'LRR_L1',  # 1) 2012 (Python)
         # 'LRR_L2',  # 2) 2012 (Python)
-        'SSC',  # 3) 2013 (Python)
+        # 'SSC',  # 3) 2013 (Python)
         # 'EDSC',  # 4) 2014 (Matlab)
         # 'ENSC',  # 5) 2016 (Python)
         # 'DSC_Net',  # 7) 2017 (Python)
         # 'DASC', # 8) 2018 (Python)
         # 'BDR',  # 9) 2018 (Matlab)
         # 'T-DSC_Vae', # ours
-        # 'M-DSC_Vae',  # ours
+        'M-DSC_Vae',  # ours
         # 'PARTY',  # 6) 2016 (Python) # this disable TF v2. Should be the last to call !!!
         # 'ODSC', # 10) 2021 (Python) # this disable TF v2. Should be the last to call !!!
         # 'EDESC' # 11) 2022 (Python)
@@ -266,9 +252,9 @@ if __name__ == "__main__":
         # 'y_pred': []
     }
 
-    n_repeat = 30
+    n_repeat = 1#30
     # k = 10
-    # datasets = _get_simulated_data(k)
+    # datasets = _get_simulated_data()
     datasets = _get_real_data()
 
     for method in methods:
@@ -288,7 +274,7 @@ if __name__ == "__main__":
                 # print(f'************************************************* iter: {i}')
                 model = ClusteringBenchmark(Z, k, affinity)
                 y_pred = model.y_predict
-                sil, acc, nmi, ari = model.evaluate(y_true)
+                acc, nmi, ari = model.evaluate(y_true)
 
                 result_df['name'].append(name)
                 result_df['method_name'].append(method)

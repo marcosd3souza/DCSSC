@@ -19,6 +19,7 @@ import tensorflow as tf
 class SubspaceRepresentation:
     def __init__(self, D_factorized):
         self.D_factorized = D_factorized
+        self.losses = []
         # self.D_original = D_original
     
     def eig_transform(self, n_vals=10):
@@ -41,7 +42,7 @@ class SubspaceRepresentation:
         return pairwise_distances(X_eig)
     
     def vae_transform(self, y=None):
-        dims = [self.D_factorized.shape[0], 500, 100, 10]
+        dims = [self.D_factorized.shape[0], 300, 100, 10]
 
         pretrain_epochs = 100
         batch_size = 256
@@ -50,12 +51,14 @@ class SubspaceRepresentation:
         # D = pairwise_distances(X_new)
 
         autoencoder.compile(optimizer='adam')
-        autoencoder.fit(
+        history = autoencoder.fit(
             self.D_factorized,
             self.D_factorized,
             batch_size=batch_size,
             epochs=pretrain_epochs
         )
+
+        self.losses = history.history
 
         # Z = autoencoder.predict(self.D_factorized)
         # Z = np.nan_to_num(Z)
@@ -74,7 +77,7 @@ class SubspaceRepresentation:
             # D = D * Z
         Z = encoder.predict(D)[2]
         # Z = Z.dot(Z.T) * pairwise_distances(Z)
-        Z = Z.dot(Z.T)
+        # Z = Z.dot(Z.T)
         # Z = kneighbors_graph(Z, n_neighbors=5, mode='connectivity').toarray()
 
         # # # Graph Laplacian.
@@ -173,7 +176,7 @@ class SubspaceRepresentation:
         # output = autoencoder(visible)
 
         # Reconstruction loss compares inputs and outputs and tries to minimise the difference
-        r_loss = losses.binary_crossentropy(input_visible, output)  # use MSE
+        r_loss = losses.mean_squared_error(input_visible, output)  # use MSE
         r_loss *= dims[0]
 
         # knn graph

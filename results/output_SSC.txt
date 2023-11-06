@@ -1,0 +1,33 @@
+/home/marcos/anaconda3/envs/subspace-clustering/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/marcos/anaconda3/envs/subspace-clustering/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZNK3c107SymBool10guard_boolEPKcl'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+2023-10-13 16:34:51.383466: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-10-13 16:34:52.082879: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+WARNING:root:Limited tf.compat.v2.summary API due to missing TensorBoard installation.
+WARNING:root:Limited tf.compat.v2.summary API due to missing TensorBoard installation.
+WARNING:root:Limited tf.compat.v2.summary API due to missing TensorBoard installation.
+WARNING:root:Limited tf.summary API due to missing TensorBoard installation.
+WARNING:root:Limited tf.compat.v2.summary API due to missing TensorBoard installation.
+WARNING:root:Limited tf.compat.v2.summary API due to missing TensorBoard installation.
+WARNING:root:Limited tf.compat.v2.summary API due to missing TensorBoard installation.
+------------------------------ SSC -------------------------------
+------------------------------ data: COIL20 -------------------------------
+acc: 0.3779166666666667 (mean) - 0.0348356480712389 (std)
+nmi: 0.5921684707643301 (mean) - 0.03786075241133482 (std)
+ari: 0.18277258657973167 (mean) - 0.06127848848707569 (std)
+------------------------------ data: MNIST -------------------------------
+acc: 0.5851291666666667 (mean) - 0.20867166957878924 (std)
+nmi: 0.7079414473689878 (mean) - 0.11882904188089537 (std)
+ari: 0.44426217666743345 (mean) - 0.2650560593172664 (std)
+------------------------------ data: ORL -------------------------------
+acc: 0.6339194444444445 (mean) - 0.1839754771732681 (std)
+nmi: 0.7598553107260528 (mean) - 0.12168488149091208 (std)
+ari: 0.50226981607185 (mean) - 0.23152037157845823 (std)
+------------------------------ data: YaleB -------------------------------
+acc: 0.5902076032173433 (mean) - 0.17711064584438999 (std)
+nmi: 0.7436200166968497 (mean) - 0.1100598045462711 (std)
+ari: 0.42642371352632297 (mean) - 0.24179053543361875 (std)
+------------------------------ data: COIL100 -------------------------------
+acc: 0.618711452944245 (mean) - 0.16844912526827807 (std)
+nmi: 0.7735038861111585 (mean) - 0.11517540352354877 (std)
+ari: 0.4721517119178883 (mean) - 0.23492294252056348 (std)

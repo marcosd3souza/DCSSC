@@ -24,7 +24,7 @@ class ClusteringBenchmark:
         cm2 = cm[:, js]
         acc = np.trace(cm2) / np.sum(cm2)
 
-        sil = metrics.silhouette_score(self.Z, self.y_predict, metric='euclidean')
+        # sil = metrics.silhouette_score(self.Z, self.y_predict, metric='euclidean')
         nmi = metrics.normalized_mutual_info_score(y_true, self.y_predict)
         ari = metrics.adjusted_rand_score(y_true, self.y_predict)
 
@@ -32,4 +32,4 @@ class ClusteringBenchmark:
         # print(f'nmi: {nmi}')
         # print(f'ari: {ari}')
 
-        return sil, acc, nmi, ari
+        return acc, nmi, ari

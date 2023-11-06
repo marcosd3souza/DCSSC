@@ -12,16 +12,51 @@ from tensorly.decomposition import non_negative_tucker, tucker
 #NMF
 from sklearn.decomposition import NMF
 
+from src import RNMF
+
 
 class MatrixFactorization:
-    def __init__(self, X, verbose=False):
-        self.X = np.sort(X, axis=0)
-        self.D = pairwise_distances(X)
+    def __init__(self, X, D=None, verbose=False):
+        if D is None:
+            self.D = pairwise_distances(X)
+            self.X = np.sort(X, axis=0)
+        else:
+            self.D = D
         self.verbose = verbose
+        self.errors = []
         if verbose:
             print(f'initial dispersion in D: {np.std(self.D.flatten())}')
 
-    def NMF(self, n_components=10):
+    def rNMF(self, n_components=10):
+        rnmf = RNMF.RobustNMF(self.D, n_components, 2, 30)
+        rnmf.fit()
+
+        return rnmf.W.dot(rnmf.H) + rnmf.S
+
+    def NMF(self, n_components=5):
+        nmf = NMF(
+            n_components=n_components,
+            init='random',
+            max_iter=300
+        )
+
+        W = nmf.fit_transform(self.D)
+        # H = nmf.components_
+
+        error = nmf.reconstruction_err_
+
+        return W, error#.dot(H)
+
+    def similarity_graph(self):
+
+        best_D, _ = self.nNMF()
+
+        S = kneighbors_graph(best_D, n_neighbors=5, mode='connectivity').toarray()
+
+        # best_D = pairwise_distances(best_W)
+        return S
+
+    def nNMF(self, n_components=10):
         nmf = NMF(
             n_components=n_components,
             init='random',
@@ -29,55 +64,44 @@ class MatrixFactorization:
         )
 
         # S = kneighbors_graph(self.D, n_neighbors=5).toarray()
+        # noise = np.abs(np.random.normal(0, 100, (self.D.shape[0], self.D.shape[0])))
         D_control = self.D #kneighbors_graph(self.D, n_neighbors=5).toarray() #
-
+        # best_D = D_control
         # L = sparse.csgraph.laplacian(csgraph=S, normed=True)
         # vals, vecs = np.linalg.eig(L)
         # vecs = vecs[:, np.argsort(vals)[0:20]].real
         # D_control = pairwise_distances(S)
 
+        # S = kneighbors_graph(best_D, n_neighbors=5, mode='connectivity').toarray()
+
         # plt.imshow(D_control)
         # plt.show()
-        W = None
-        H = None
-        # print(f'std before: {np.std(D_control)}')
-        # errors = []
-        last_loss = 99999999
-        threshold = 5.0
-        for it in range(10):
+
+        best_D = None
+        best_loss = np.inf
+        for it in range(30):
             W = nmf.fit_transform(D_control)
             H = nmf.components_
 
             error = nmf.reconstruction_err_
-            if (error / last_loss) > threshold:
+            self.errors.append(error)
+
+            W_norm = np.linalg.norm(W, axis=1).reshape(-1, 1)
+            H_norm = np.linalg.norm(H, axis=0).reshape(1, -1)
+
+            if error < best_loss:
+                best_loss = error
+                best_D = D_control
+                # best_W = W
+
+            D_control = W_norm.dot(H_norm) #+ (best_D - W_norm.dot(H_norm))
+
+            if error == np.inf:
                 break
 
-            last_loss = error
-            # W = gaussian_filter(W, sigma=5.0) # np.sort(W.dot(H), axis=0)
-            # H = gaussian_filter(H, sigma=5.0)
-            # D_control = S + W.dot(H)
-            D_control = np.linalg.norm(W, axis=1).reshape(-1, 1).dot(np.linalg.norm(H, axis=0).reshape(1, -1))
-
-            # S = kneighbors_graph(D_control, n_neighbors=20).toarray()
-            # D_control = pairwise_distances(D_control)
-            # nmf_std = np.std(D_recon_NMF.flatten())
-            # if self.verbose:
-            #     print(f'dispersion by NMF: {nmf_std}')
-
-
             print(f'it: {it} - recon error: {error}')
-            # print(f'std: {np.std(D_control)}')
 
-        # D_control = np.sort(D_control, axis=0)
-        D_new = np.sort(D_control, axis=0)
-        S = kneighbors_graph(D_new, n_neighbors=5, mode='connectivity').toarray()
-        # plt.plot(errors)
-        # plt.show()
-        # D_control = W.dot(H)
-        # D_control = pairwise_distances(S)
-        # D_control = S * D_control
-        # D_control[D_control > 0.0] = 1
-        return S, 0
+        return best_D, best_loss
 
     def NTD(self, n_ranks=5):
         D_control = self.D # kneighbors_graph(self.D, n_neighbors=5, metric='precomputed').toarray()
@@ -89,6 +113,7 @@ class MatrixFactorization:
 
             # non_negative_tucker(tensor, rank=(n_ranks, n_ranks), n_iter_max=300, return_errors=False)
             # core, factors = tucker(tl.tensor(self.X, dtype='float'), rank=[n_ranks, n_ranks])
+            self.errors.append(errors[0])
 
             D_control = tl.tucker_to_tensor((core, factors))
             #D_control = D_control ** (S + 10)
@@ -101,4 +126,4 @@ class MatrixFactorization:
         # D_control = pairwise_distances(D_control)
         D_control = S * D_control
         # D_control = kneighbors_graph(pairwise_distances(D_control), n_neighbors=5, metric='precomputed').toarray()
-        return D_control, 0
+        return D_control
