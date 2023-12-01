@@ -1,0 +1,71 @@
+# Created by Octave 6.4.0, Thu Jun 15 18:26:59 2023 -03 <marcos@marcos-Inspiron-5480>
+# name: avgrateB
+# type: matrix
+# rows: 1
+# columns: 2
+ 0 0.033203125
+
+
+# name: avgrateZ
+# type: matrix
+# rows: 1
+# columns: 2
+ 0 0.030078125000000001
+
+
+# name: medrateB
+# type: matrix
+# rows: 1
+# columns: 2
+ 0 0.0078125
+
+
+# name: medrateZ
+# type: matrix
+# rows: 1
+# columns: 2
+ 0 0
+
+
+# name: AllrateB
+# type: cell
+# rows: 1
+# columns: 2
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 20
+ 0.4609375 0.0390625 0 0.015625 0 0.0078125 0.0078125 0.0234375 0.0078125 0.0078125 0.0078125 0 0 0.015625 0 0.015625 0.0078125 0.0078125 0.0390625 0
+
+
+
+
+
+# name: AllrateZ
+# type: cell
+# rows: 1
+# columns: 2
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 20
+ 0.4609375 0.0390625 0 0.0078125 0 0.0078125 0 0.0234375 0 0 0 0 0 0.015625 0 0 0 0.0078125 0.0390625 0
+
+
+
+
+
