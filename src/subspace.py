@@ -1,20 +1,24 @@
 import numpy as np
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 
 from scipy import sparse
-from sklearn.manifold import TSNE
-import umap
+# from sklearn.manifold import TSNE
+# import umap
+
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 from sklearn.metrics import pairwise_distances
 
-import keras
+# import keras
 from keras import backend as K
 from keras import losses
 from keras.models import Model
-from keras.layers import Lambda, Dense, Input, LeakyReLU, BatchNormalization, Softmax
-from sklearn.neighbors import kneighbors_graph
+from keras.layers import Lambda, Dense, Input, LeakyReLU, ReLU, Dropout, BatchNormalization, Softmax
+# from sklearn.neighbors import kneighbors_graph
 
-import tensorflow as tf
+# import tensorflow as tf
+# tf.compat.v1.enable_v2_behavior()
 
 class SubspaceRepresentation:
     def __init__(self, D_factorized):
@@ -42,7 +46,7 @@ class SubspaceRepresentation:
         return pairwise_distances(X_eig)
     
     def vae_transform(self, y=None):
-        dims = [self.D_factorized.shape[0], 300, 100, 10]
+        dims = [self.D_factorized.shape[0], 100, 10]
 
         pretrain_epochs = 100
         batch_size = 256
@@ -55,7 +59,8 @@ class SubspaceRepresentation:
             self.D_factorized,
             self.D_factorized,
             batch_size=batch_size,
-            epochs=pretrain_epochs
+            epochs=pretrain_epochs,
+            verbose=0
         )
 
         self.losses = history.history
@@ -138,8 +143,9 @@ class SubspaceRepresentation:
         for i in range(n_stacks - 1):
             x = Dense(units=dims[i + 1], activation='relu', name='encoder_%d' % i)(x)
             x = BatchNormalization()(x)
-            x = LeakyReLU()(x)
+            x = ReLU()(x)
             # x = Softmax()(x)
+            x = Dropout(0.2)(x)
 
         latent_dim = dims[-1]
 
@@ -157,8 +163,9 @@ class SubspaceRepresentation:
         for i in range(n_stacks - 1, 0, -1):
             x = Dense(dims[i], activation='relu', name='decoder_%d' % i)(x)
             x = BatchNormalization()(x)
-            x = LeakyReLU()(x)
             # x = Softmax()(x)
+            x = ReLU()(x)
+            x = Dropout(.2)(x)
 
         # output
         x = Dense(dims[0], name='decoder_0')(x)

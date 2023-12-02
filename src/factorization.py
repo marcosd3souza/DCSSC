@@ -1,13 +1,13 @@
 import numpy as np
-from matplotlib import pyplot as plt
-from scipy import sparse
-from scipy.ndimage import gaussian_filter
+# from matplotlib import pyplot as plt
+# from scipy import sparse
+# from scipy.ndimage import gaussian_filter
 from sklearn.metrics import pairwise_distances
 
 # NTD
-import tensorly as tl
+# import tensorly as tl
 from sklearn.neighbors import kneighbors_graph
-from tensorly.decomposition import non_negative_tucker, tucker
+# from tensorly.decomposition import non_negative_tucker, tucker
 
 #NMF
 from sklearn.decomposition import NMF
@@ -41,11 +41,11 @@ class MatrixFactorization:
         )
 
         W = nmf.fit_transform(self.D)
-        # H = nmf.components_
+        H = nmf.components_
 
-        error = nmf.reconstruction_err_
+        # error = nmf.reconstruction_err_
 
-        return W, error#.dot(H)
+        return W.dot(H)
 
     def similarity_graph(self):
 
@@ -63,22 +63,11 @@ class MatrixFactorization:
             max_iter=300
         )
 
-        # S = kneighbors_graph(self.D, n_neighbors=5).toarray()
-        # noise = np.abs(np.random.normal(0, 100, (self.D.shape[0], self.D.shape[0])))
-        D_control = self.D #kneighbors_graph(self.D, n_neighbors=5).toarray() #
-        # best_D = D_control
-        # L = sparse.csgraph.laplacian(csgraph=S, normed=True)
-        # vals, vecs = np.linalg.eig(L)
-        # vecs = vecs[:, np.argsort(vals)[0:20]].real
-        # D_control = pairwise_distances(S)
+        D_control = self.D
 
-        # S = kneighbors_graph(best_D, n_neighbors=5, mode='connectivity').toarray()
-
-        # plt.imshow(D_control)
-        # plt.show()
-
-        best_D = None
+        # best_D = None
         best_loss = np.inf
+        candidates = []
         for it in range(30):
             W = nmf.fit_transform(D_control)
             H = nmf.components_
@@ -89,41 +78,25 @@ class MatrixFactorization:
             W_norm = np.linalg.norm(W, axis=1).reshape(-1, 1)
             H_norm = np.linalg.norm(H, axis=0).reshape(1, -1)
 
-            if error < best_loss:
-                best_loss = error
-                best_D = D_control
+            # if error < best_loss:
+            #     best_loss = error
+            #     best_D = D_control
                 # best_W = W
 
-            D_control = W_norm.dot(H_norm) #+ (best_D - W_norm.dot(H_norm))
+            D_control = W_norm.dot(H_norm)
+            candidates.append(D_control)
 
             if error == np.inf:
                 break
 
-            print(f'it: {it} - recon error: {error}')
+            # print(f'it: {it} - recon error: {error}')
+        derivatives = [abs(self.errors[i] - self.errors[i-1]) - abs(self.errors[i+1] - self.errors[i]) for i in range(2, 20)]
+        idx = np.where(np.array(derivatives) < 0)[0][1] + 2
+        best_D = candidates[idx]
+
+        # for i, v in enumerate(derivatives):
+        #     if v < 0:
+        #         best_D = candidates[i+2]
+        #         break
 
         return best_D, best_loss
-
-    def NTD(self, n_ranks=5):
-        D_control = self.D # kneighbors_graph(self.D, n_neighbors=5, metric='precomputed').toarray()
-        S = kneighbors_graph(D_control, n_neighbors=5).toarray()
-
-        for it in range(10):
-            tensor = tl.tensor(D_control, dtype='float')
-            (core, factors), errors = non_negative_tucker(tensor, rank=[n_ranks, n_ranks, n_ranks, n_ranks], return_errors=True)
-
-            # non_negative_tucker(tensor, rank=(n_ranks, n_ranks), n_iter_max=300, return_errors=False)
-            # core, factors = tucker(tl.tensor(self.X, dtype='float'), rank=[n_ranks, n_ranks])
-            self.errors.append(errors[0])
-
-            D_control = tl.tucker_to_tensor((core, factors))
-            #D_control = D_control ** (S + 10)
-            # ntd_std = np.std(D_recon_NTD.flatten())
-            # if self.verbose:
-            #     print(f'dispersion by NTD: {ntd_std}')
-
-            print(f'it {it} error {errors}')
-        # self.D = D_control
-        # D_control = pairwise_distances(D_control)
-        D_control = S * D_control
-        # D_control = kneighbors_graph(pairwise_distances(D_control), n_neighbors=5, metric='precomputed').toarray()
-        return D_control
