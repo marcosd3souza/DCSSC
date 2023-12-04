@@ -197,27 +197,28 @@ def _get_bio_data():
     # Carcinom
     data = sio.loadmat('./datasets/Carcinom.mat')
     carcinom_df = data['X']
-    carcinom_labels = np.squeeze(data['Y'] - data['Y'].min() + 1)
+    carcinom_labels = np.sort(np.squeeze(data['Y'] - data['Y'].min() + 1))
 
     # Prostate-GE
     data = sio.loadmat('./datasets/Prostate_GE.mat')
     prostate_df = data['X']
-    prostate_labels = np.squeeze(data['Y'] - data['Y'].min() + 1)
+    prostate_labels = np.sort(np.squeeze(data['Y'] - data['Y'].min() + 1))
+
 
     # TOX171
     data = sio.loadmat('./datasets/TOX_171.mat')
     tox171_df = data['X']
-    tox171_labels = np.squeeze(data['Y'] - data['Y'].min() + 1)
+    tox171_labels = np.sort(np.squeeze(data['Y'] - data['Y'].min() + 1))
 
     # lung
     data = sio.loadmat('./datasets/lung.mat')
     lung_df = data['X']
-    lung_labels = np.squeeze(data['Y'] - data['Y'].min() + 1)
+    lung_labels = np.sort(np.squeeze(data['Y'] - data['Y'].min() + 1))
 
     # lymphoma
     data = sio.loadmat('./datasets/lymphoma.mat')
     lymphoma_df = data['X']
-    lymphoma_labels = np.squeeze(data['Y'] - data['Y'].min() + 1)
+    lymphoma_labels = np.sort(np.squeeze(data['Y'] - data['Y'].min() + 1))
 
     return [
         (carcinom_df, carcinom_labels, None, None, None, 'Carcinom'),
@@ -336,11 +337,11 @@ def _get_image_data():
         (Yale_df, Yale_labels, Yale_img, Yale_input, Yale_last_layer, 'Yale'),
         (warpAR_df, warpAR_labels, warpAR_img, warpAR_input, warpAR_last_layer, 'WarpAR10P'),
         (pixraw10P_df, pixraw10P_labels, pixraw10P_img, pixraw10P_input, pixraw10P_last_layer, 'Pixraw10P'),
-        # (coil20_df, coil20_labels, coil20_img, coil20_input, coil20_last_layer, 'COIL20'),
-        # (mnist_df, mnist_labels, mnist_img, mnist_input, mnist_last_layer, 'MNIST'),
-        # (orl_df, orl_labels, orl_img, orl_input, orl_last_layer, 'ORL'),
-        # (YaleB_df, YaleB_labels, YaleB_img, YaleB_input, YaleB_last_layer, 'YaleB'),
-        # (coil100_df, coil100_labels, coil100_img, coil100_input, coil100_last_layer, 'COIL100')
+        (coil20_df, coil20_labels, coil20_img, coil20_input, coil20_last_layer, 'COIL20'),
+        (mnist_df, mnist_labels, mnist_img, mnist_input, mnist_last_layer, 'MNIST'),
+        (orl_df, orl_labels, orl_img, orl_input, orl_last_layer, 'ORL'),
+        (YaleB_df, YaleB_labels, YaleB_img, YaleB_input, YaleB_last_layer, 'YaleB'),
+        (coil100_df, coil100_labels, coil100_img, coil100_input, coil100_last_layer, 'COIL100')
     ]
 
 
@@ -357,10 +358,10 @@ if __name__ == "__main__":
         # 'T-DSC_Vae', # ours
         # 'DGSSC_baseline',  # ours
         # 'DGSSC_NMF',  # ours
-        # 'DGSSC',  # ours
+        'DGSSC',  # ours
         # 'PARTY',  # 6) 2016 (Python) # this disable TF v2. Should be the last to call !!!
-        'ODSC', # 10) 2021 (Python) # this disable TF v2. Should be the last to call !!!
-        'EDESC' # 11) 2022 (Python)
+        # 'ODSC', # 10) 2021 (Python) # this disable TF v2. Should be the last to call !!!
+        # 'EDESC' # 11) 2022 (Python)
     ]
 
     # stds = [5, 10, 15]
@@ -414,4 +415,4 @@ if __name__ == "__main__":
                 print(f'nmi: {nmi_mean} (mean) - {nmi_std} (std)')
                 print(f'ari: {ari_mean} (mean) - {ari_std} (std)')
 
-    pd.DataFrame(result_df).to_csv('benchmark_ours.csv', sep=';')
+    # pd.DataFrame(result_df).to_csv('benchmark_ours.csv', sep=';')

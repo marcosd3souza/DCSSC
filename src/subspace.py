@@ -46,13 +46,13 @@ class SubspaceRepresentation:
         return pairwise_distances(X_eig)
     
     def vae_transform(self, y=None):
+
         dims = [self.D_factorized.shape[0], 100, 10]
 
-        pretrain_epochs = 100
-        batch_size = 256
+        pretrain_epochs = 30
+        batch_size = 512
 
         autoencoder, encoder, decoder = self._vae_model(dims)
-        # D = pairwise_distances(X_new)
 
         autoencoder.compile(optimizer='adam')
         history = autoencoder.fit(
@@ -65,60 +65,10 @@ class SubspaceRepresentation:
 
         self.losses = history.history
 
-        # Z = autoencoder.predict(self.D_factorized)
-        # Z = np.nan_to_num(Z)
-        # Z = np.sort(Z, axis=0)
         D = self.D_factorized
-        # Z = encoder.predict(D)[2]
 
-        # Z = D
-        # #
-        # for it in range(10):
-        #     # D = autoencoder.predict(D)
-        #     Z = encoder.predict(D)[2]
-        #     Z = Z.dot(Z.T)
-        #     D = D * Z
-
-            # D = D * Z
         Z = encoder.predict(D)[2]
-        # Z = Z.dot(Z.T) * pairwise_distances(Z)
-        # Z = Z.dot(Z.T)
-        # Z = kneighbors_graph(Z, n_neighbors=5, mode='connectivity').toarray()
 
-        # # # Graph Laplacian.
-        # L = sparse.csgraph.laplacian(csgraph=S, normed=True)
-        # vals, vecs = np.linalg.eig(L)
-        # Z = vecs.real
-        # Z = vecs[:, np.argsort(vals)[1:10]].real
-        # Z = np.sort(Z, axis=0)
-        # Z = np.linalg.norm(Z, axis=1).reshape(-1, 1)
-        # Z = Z.dot(Z.T)
-        # Z = np.nan_to_num(Z)
-        # Z = np.linalg.norm(Z, axis=1).reshape(-1, 1).dot(np.linalg.norm(Z, axis=1).reshape(1, -1))#Z.dot(Z.T)
-        # Z = np.abs((D * Z))
-
-        # Z = (Z + Z.T) / 2
-        # Z = ((D + D.T) / 2) + (Z.dot(Z.T))#Z.dot(Z.T)
-        # Z = pairwise_distances(Z)
-        # Z = np.sort(Z, axis=0)
-        # Z = kneighbors_graph(Z, n_neighbors=5, mode='connectivity').toarray()
-        # Z[Z < 1.0] = 0
-        # Z[Z > 1.0] = 1
-        # Z = Z[Z > 0].reshape(Z.shape[0], 5)
-
-        # X_reduced = TSNE(n_components=2, learning_rate='auto', init='random', metric='precomputed').fit_transform(Z)
-        # plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=y)
-        # plt.title(f'10 clusters (std=50)')
-        # plt.savefig(f'results/tsne_50_nmf_vae.png')
-        # plt.show()
-
-        # X_reduced = umap.UMAP(metric='precomputed').fit_transform(Z)
-        # plt.imshow(Z)
-        # plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=y)
-        # plt.title(f'10 clusters (std=50)')
-        # plt.savefig(f'results/Z_nmf_vae.png')
-
-        # return pd.DataFrame(Z).T.corr('pearson').values
         return Z
 
     def _sampling(self, args):
@@ -143,7 +93,7 @@ class SubspaceRepresentation:
         for i in range(n_stacks - 1):
             x = Dense(units=dims[i + 1], activation='relu', name='encoder_%d' % i)(x)
             x = BatchNormalization()(x)
-            x = ReLU()(x)
+            x = LeakyReLU()(x)
             # x = Softmax()(x)
             x = Dropout(0.2)(x)
 
@@ -164,8 +114,8 @@ class SubspaceRepresentation:
             x = Dense(dims[i], activation='relu', name='decoder_%d' % i)(x)
             x = BatchNormalization()(x)
             # x = Softmax()(x)
-            x = ReLU()(x)
-            x = Dropout(.2)(x)
+            x = LeakyReLU()(x)
+            x = Dropout(0.2)(x)
 
         # output
         x = Dense(dims[0], name='decoder_0')(x)

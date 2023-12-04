@@ -68,7 +68,7 @@ class MatrixFactorization:
         # best_D = None
         best_loss = np.inf
         candidates = []
-        for it in range(30):
+        for it in range(52):
             W = nmf.fit_transform(D_control)
             H = nmf.components_
 
@@ -90,7 +90,7 @@ class MatrixFactorization:
                 break
 
             # print(f'it: {it} - recon error: {error}')
-        derivatives = [abs(self.errors[i] - self.errors[i-1]) - abs(self.errors[i+1] - self.errors[i]) for i in range(2, 20)]
+        derivatives = [abs(self.errors[i] - self.errors[i-1]) - abs(self.errors[i+1] - self.errors[i]) for i in range(2,50)]
         idx = np.where(np.array(derivatives) < 0)[0][1] + 2
         best_D = candidates[idx]
 
