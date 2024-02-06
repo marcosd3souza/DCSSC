@@ -18,13 +18,21 @@ conda create -name subspace-clustering
 conda activate subspace-clustering
 conda install pip
 ```
-```pip install oct2py cvxpy pandas opencv-python-headless torchvision munkres```
+
+```
+pip install oct2py cvxpy pandas opencv-python-headless torchvision munkres
+```
 
 Obs1: there's a conflict between oct2py and opencv-python.
 <br>Obs2: Please install opencv-python-headless
 <br>Obs3: opencv is necessary to convert CIFAR10 to grayscale
 
-```conda install -c conda-forge tensorflow keras scikit-learn```
-```conda install -c pytorch pytorch```
+```
+conda install -c conda-forge tensorflow keras scikit-learn
+```
+
+``` 
+conda install -c pytorch pytorch
+```
 
 #######################################
