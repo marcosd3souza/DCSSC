@@ -36,6 +36,7 @@ conda install -c pytorch pytorch
 ```
 
 #######################################
+
 Run main.py
 ``` 
 python main.py
