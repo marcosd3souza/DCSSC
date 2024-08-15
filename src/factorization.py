@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 # from matplotlib import pyplot as plt
 # from scipy import sparse
@@ -47,11 +48,16 @@ class MatrixFactorization:
 
         return W.dot(H)
 
-    def similarity_graph(self):
+    def similarity_graph(self, n_components, k):
 
-        best_D, _ = self.nNMF()
+        # self.S = kneighbors_graph(self.D, n_neighbors=k, mode='connectivity').toarray()
+        # plt.imshow(self.S)
+        # plt.show()
 
-        S = kneighbors_graph(best_D, n_neighbors=5, mode='connectivity').toarray()
+        # best_D, _ = self.nNMF(n_components)
+        S = kneighbors_graph(self.D, n_neighbors=k, mode='connectivity').toarray()
+        # plt.imshow(S)
+        # plt.show()
 
         # best_D = pairwise_distances(best_W)
         return S
@@ -60,20 +66,20 @@ class MatrixFactorization:
         nmf = NMF(
             n_components=n_components,
             init='random',
-            max_iter=300
+            max_iter=500
         )
 
         D_control = self.D
 
         # best_D = None
-        best_loss = np.inf
         candidates = []
-        for it in range(52):
+        for it in range(12):
             W = nmf.fit_transform(D_control)
             H = nmf.components_
 
             error = nmf.reconstruction_err_
             self.errors.append(error)
+            candidates.append(W.dot(H))
 
             W_norm = np.linalg.norm(W, axis=1).reshape(-1, 1)
             H_norm = np.linalg.norm(H, axis=0).reshape(1, -1)
@@ -83,16 +89,23 @@ class MatrixFactorization:
             #     best_D = D_control
                 # best_W = W
 
-            D_control = W_norm.dot(H_norm)
-            candidates.append(D_control)
+            D_control = W_norm.dot(H_norm) #W.dot(H)
+            D_control[D_control < 0] = 0
+
+            # print(f'it: {it} error: {error}')
 
             if error == np.inf:
                 break
 
+            print(f'NMF error: {error}')
+
             # print(f'it: {it} - recon error: {error}')
-        derivatives = [abs(self.errors[i] - self.errors[i-1]) - abs(self.errors[i+1] - self.errors[i]) for i in range(2,50)]
-        idx = np.where(np.array(derivatives) < 0)[0][1] + 2
+        # derivatives = [abs(self.errors[i] - self.errors[i-1]) - abs(self.errors[i+1] - self.errors[i]) for i in range(2,50)]
+        # idx = np.where(np.array(derivatives) < 0)[0][1] + 2
+        # print(f"best derivative: {idx}")
+        idx = np.argmin(self.errors)
         best_D = candidates[idx]
+        best_loss = self.errors[idx]
 
         # for i, v in enumerate(derivatives):
         #     if v < 0:

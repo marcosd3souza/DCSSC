@@ -28,8 +28,8 @@ class ClusteringBenchmark:
         nmi = metrics.normalized_mutual_info_score(y_true, self.y_predict)
         ari = metrics.adjusted_rand_score(y_true, self.y_predict)
 
-        # print(f'acc: {acc}')
-        # print(f'nmi: {nmi}')
-        # print(f'ari: {ari}')
+        print(f'acc: {acc}')
+        print(f'nmi: {nmi}')
+        print(f'ari: {ari}')
 
         return acc, nmi, ari

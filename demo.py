@@ -1,6 +1,7 @@
 from sklearn.manifold import TSNE
 from sklearn.metrics import pairwise_distances
 from sklearn.datasets import make_blobs, make_circles, make_classification
+from sklearn.preprocessing import MinMaxScaler
 
 from src.factorization import MatrixFactorization
 from src.subspace import SubspaceRepresentation
@@ -43,72 +44,73 @@ bench_result = {
     'ari_our_nmf': []
 }
 
-std_candi = [5.0]#, 1.0, 5.0]#, 1.0, 5.0]#, 50.0, 100.0]
-k_candi = [10]
-n_repeat = 30
+std_candi = [0.5]#, 1.0, 5.0]#, 1.0, 5.0]#, 50.0, 100.0]
+k_candi = [5]
+n_repeat = 1# 30
 
 for k in k_candi:
     for _std in std_candi:
-        X, y_true = make_blobs(n_samples=1000, cluster_std=_std, centers=k, n_features=100)
+        X, y_true = make_blobs(n_samples=1000, cluster_std=_std, centers=k, n_features=10)
 
-        _sorted = np.sort(np.concatenate([np.array(y_true)[:, None], X], axis=1), axis=0)
-        X = _sorted[:, 1:]
-        y_true = _sorted[:, 0]
+        # _sorted = np.sort(np.concatenate([np.array(y_true)[:, None], X], axis=1), axis=0)
+        # X = _sorted[:, 1:]
+        # y_true = _sorted[:, 0]
+        # D = pairwise_distances(X)
+        D = MinMaxScaler().fit_transform(pairwise_distances(X))
 
         for _ in range(n_repeat):
             # X = shuffle(X)
 
             # X_sort = np.sort(X, axis=0)
 
-            print('-------------------------> BASELINE')
-            # X = np.sort(X, axis=0)
-            D = pairwise_distances(X)
-            S = kneighbors_graph(D, n_neighbors=5, mode='connectivity').toarray()
-
-            model = SubspaceRepresentation(S)
-            Z = model.vae_transform()
-
-            Z = np.nan_to_num(Z)
-            # Z = Z.dot(Z.T)
-            Z = np.sort(Z, axis=0)
-            # Z[Z > np.mean(Z)] = 0
-            D_Z_vae_baseline = pairwise_distances(Z)
-
-            plt.figure()
-            plt.axis('off')
-
-            plt.imshow(D, cmap='hot')
-            # plt.colorbar(img, orientation='vertical')
-            plt.savefig(f'results/figs/{_std}/D_baseline.eps', format='eps', bbox_inches='tight', pad_inches=0)
-
-            bench = ClusteringBenchmark(D_Z_vae_baseline, k)
-
-            acc, nmi, ari = bench.evaluate(y_true)
-            bench_result['acc_baseline'].append(acc)
-            bench_result['nmi_baseline'].append(nmi)
-            bench_result['ari_baseline'].append(ari)
-
-            print('-------------------------> NMF')
-            D_NMF = MatrixFactorization(None, D).NMF()
-            # D_NMF = np.sort(D_NMF, axis=0)
-            # D_NMF = pairwise_distances(W_NMF)
-
-            S = kneighbors_graph(D_NMF, n_neighbors=5, mode='connectivity').toarray()
-            model = SubspaceRepresentation(S)
-            Z = model.vae_transform()
-            Z = np.nan_to_num(Z)
-            Z = np.sort(Z, axis=0)
-            D_Z_vae_NMF = pairwise_distances(Z)
-
+            # print('-------------------------> BASELINE')
+            # # X = np.sort(X, axis=0)
+            # S = kneighbors_graph(D, n_neighbors=5, mode='connectivity').toarray()
             #
-            bench = ClusteringBenchmark(D_Z_vae_NMF, k)
-            # plt.scatter(X[:, 0], X[:, 1], label=bench.y_predict)
-            # plt.savefig(f'results/figs/{_std}/nmf.png')
+            # model = SubspaceRepresentation(S)
+            # Z = model.vae_transform()
             #
-            acc, nmi, ari = bench.evaluate(y_true)
-            bench_result['acc_nmf'].append(acc)
-            bench_result['nmi_nmf'].append(nmi)
-            bench_result['ari_nmf'].append(ari)
+            # Z = np.nan_to_num(Z)
+            # # Z = Z.dot(Z.T)
+            # Z = np.sort(Z, axis=0)
+            # # Z[Z > np.mean(Z)] = 0
+            # D_Z_vae_baseline = pairwise_distances(Z)
+            #
+            # plt.figure()
+            # plt.axis('off')
+            #
+            # plt.imshow(D, cmap='hot')
+            # # plt.colorbar(img, orientation='vertical')
+            # plt.savefig(f'results/figs/{_std}/D_baseline.eps', format='eps', bbox_inches='tight', pad_inches=0)
+            #
+            # bench = ClusteringBenchmark(D_Z_vae_baseline, k)
+            #
+            # acc, nmi, ari = bench.evaluate(y_true)
+            # bench_result['acc_baseline'].append(acc)
+            # bench_result['nmi_baseline'].append(nmi)
+            # bench_result['ari_baseline'].append(ari)
+
+            # print('-------------------------> NMF')
+            # D_NMF = MatrixFactorization(None, D).NMF()
+            # # D_NMF = np.sort(D_NMF, axis=0)
+            # # D_NMF = pairwise_distances(W_NMF)
+            #
+            # S = kneighbors_graph(D_NMF, n_neighbors=5, mode='connectivity').toarray()
+            # model = SubspaceRepresentation(S)
+            # Z = model.vae_transform()
+            # Z = np.nan_to_num(Z)
+            # Z = np.sort(Z, axis=0)
+            # D_Z_vae_NMF = pairwise_distances(Z)
+            #
+            # #
+            # bench = ClusteringBenchmark(D_Z_vae_NMF, k)
+            # # plt.scatter(X[:, 0], X[:, 1], label=bench.y_predict)
+            # # plt.savefig(f'results/figs/{_std}/nmf.png')
+            # #
+            # acc, nmi, ari = bench.evaluate(y_true)
+            # bench_result['acc_nmf'].append(acc)
+            # bench_result['nmi_nmf'].append(nmi)
+            # bench_result['ari_nmf'].append(ari)
 
             # print('-------------------------> our NMF')
             # model = MatrixFactorization(None, D)
@@ -145,22 +147,23 @@ for k in k_candi:
             # bench_result['ari_our_nmf'].append(ari)
 
             print('-------------------------> DGSSC')
-            S_nNMF = MatrixFactorization(None, D).similarity_graph()
+            # S_nNMF = MatrixFactorization(None, D).similarity_graph()
             # D_S = pairwise_distances(S)
-            model = SubspaceRepresentation(S_nNMF)
-            Z = model.vae_transform()
+            S = kneighbors_graph(D, n_neighbors=15, mode='connectivity').toarray()
+            Z = SubspaceRepresentation(S).cvae_transform(y_true)
 
-            plt.figure()
-            plt.plot(model.losses['loss'])
-            plt.savefig(f'results/figs/{_std}/vae_losses.eps', format='eps')
+            ## Loss
+            # plt.figure()
+            # plt.plot(model.losses['loss'])
+            # plt.savefig(f'results/figs/{_std}/vae_losses.eps', format='eps')
 
-            minLoss = min(model.losses['loss'])
+            # minLoss = min(model.losses['loss'])
 
-            Z = np.nan_to_num(Z)
+            # Z = np.nan_to_num(Z)
             # Z = Z.dot(Z.T)
-            Z = np.sort(Z, axis=0)
+            # Z = np.sort(Z, axis=0)
             # Z[Z > np.mean(Z)] = 0
-            D_Z_vae = pairwise_distances(Z)
+            D_Z_cvae = pairwise_distances(Z)
             # D_Z[D_Z > 1.0] = D_Z[D_Z > 1.0] * 10
             # Z = S * Z
             # Z = Z.dot(Z.T)
@@ -181,33 +184,33 @@ for k in k_candi:
             # # plt.colorbar(img, orientation='vertical')
             # plt.savefig(f'results/figs/{_std}/D_Z_vae.eps', format='eps')
 
-            plt.figure()
-            plt.axis('off')
-            img = plt.imshow(S_nNMF)
+            # plt.figure()
+            # plt.axis('off')
+            # img = plt.imshow(S_nNMF)
             # plt.colorbar(img, orientation='vertical')
-            plt.savefig(f'results/figs/{_std}/S_nNMF.eps', format='eps', bbox_inches='tight', pad_inches=0)
+            # plt.savefig(f'results/figs/{_std}/S_nNMF.eps', format='eps', bbox_inches='tight', pad_inches=0)
 
-            S_D_Z_vae = kneighbors_graph(D_Z_vae, n_neighbors=5, mode='connectivity').toarray()
-            plt.figure()
-            plt.axis('off')
-            img = plt.imshow(S_D_Z_vae)
+            # S_D_Z_vae = kneighbors_graph(D_Z_vae, n_neighbors=5, mode='connectivity').toarray()
+            # plt.figure()
+            # plt.axis('off')
+            # img = plt.imshow(S_D_Z_vae)
             # plt.colorbar(img, orientation='vertical')
-            plt.savefig(f'results/figs/{_std}/S_D_Z_vae.eps', format='eps', bbox_inches='tight', pad_inches=0)
+            # plt.savefig(f'results/figs/{_std}/S_D_Z_vae.eps', format='eps', bbox_inches='tight', pad_inches=0)
 
-            bench = ClusteringBenchmark(D_Z_vae, k)
+            bench = ClusteringBenchmark(D_Z_cvae, k)
             # plt.scatter(X[:, 0], X[:, 1], label=bench.y_predict)
             # plt.savefig(f'results/figs/{_std}/nmf_vae.png')
 
             acc, nmi, ari = bench.evaluate(y_true)
-            bench_result['acc_our_nmf'].append(acc)
-            bench_result['nmi_our_nmf'].append(nmi)
-            bench_result['ari_our_nmf'].append(ari)
+            # bench_result['acc_our_nmf'].append(acc)
+            # bench_result['nmi_our_nmf'].append(nmi)
+            # bench_result['ari_our_nmf'].append(ari)
 
-        bench_df = pd.DataFrame(bench_result)
+        # bench_df = pd.DataFrame(bench_result)
         # print(bench_df.T)
         # bench_df.to_csv(f"results/benchs/benchmark_std-{_std}.csv", sep=';')
 
         # _save_boxplot_bench(bench_df, _std, 'sil')
-        _save_boxplot_bench(bench_df, _std, 'acc')
-        _save_boxplot_bench(bench_df, _std, 'nmi')
-        _save_boxplot_bench(bench_df, _std, 'ari')
+        # _save_boxplot_bench(bench_df, _std, 'acc')
+        # _save_boxplot_bench(bench_df, _std, 'nmi')
+        # _save_boxplot_bench(bench_df, _std, 'ari')
