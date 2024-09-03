@@ -89,7 +89,7 @@ class DeepSubspaceClustering:
 
         self.optimizer = optimize(self.cost, learning_rate, optimizer)
 
-    def train(self, batch_size=100, epochs=30, print_step=1):
+    def train(self, batch_size=100, epochs=10, print_step=1):
         sess = tf.Session()
         sess.run(tf.initialize_all_variables())
         batch_generator = GenBatch(self.inputX, C=self.inputC, batch_size=batch_size)

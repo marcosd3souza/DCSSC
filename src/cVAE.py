@@ -31,6 +31,11 @@ class Encoder(nn.Module):
         self.fc_mu = nn.Linear(hidden_dim, latent_dim)  # Mean of the latent space
         self.fc_logvar = nn.Linear(hidden_dim, latent_dim)  # Log-variance of the latent space
 
+    def reparameterize(self, mu, logvar):
+        std = torch.exp(0.01 * logvar)
+        eps = torch.randn_like(std)
+        return mu + eps * std
+
     def forward(self, x):
         # Pass through the first encoding layer
         h1 = self.encoder_layer(x)
@@ -39,7 +44,9 @@ class Encoder(nn.Module):
         mu = self.fc_mu(h1)
         logvar = self.fc_logvar(h1)
 
-        return mu, logvar
+        z = self.reparameterize(mu, logvar)
+
+        return mu, logvar, z
 
 
 # Define the Decoder network
@@ -67,14 +74,8 @@ class VAE(nn.Module):
         self.encoder = Encoder(input_dim, hidden_dim, latent_dim)
         self.decoder = Decoder(latent_dim, hidden_dim, input_dim)
 
-    def reparameterize(self, mu, logvar):
-        std = torch.exp(0.5 * logvar)
-        eps = torch.randn_like(std)
-        return mu + eps * std
-
     def forward(self, x):
-        mu, logvar = self.encoder(x)
-        z = self.reparameterize(mu, logvar)
+        mu, logvar, z = self.encoder(x)
         return self.decoder(z), mu, logvar
 
 
@@ -105,8 +106,8 @@ def contrastive_loss(encoder, A, margin=1.0):
     A_inverse = 1 - A
     # negative_pairs = torch.nonzero(A_inverse)
 
-    z1, _, = encoder(A)
-    z2, _, = encoder(A_inverse)
+    _, _, z1 = encoder(A)
+    _, _, z2 = encoder(A_inverse)
 
     # Normalize the embeddings
     z1 = F.normalize(z1, p=2, dim=1)

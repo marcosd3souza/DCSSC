@@ -35,6 +35,7 @@ class SubspaceRepresentation:
     def __init__(self, D_input):
         self.D_input = D_input
         self.losses = []
+        # torch.manual_seed(10)
         # self.D_original = D_original
     
     def eig_transform(self, n_vals=10):
@@ -56,17 +57,18 @@ class SubspaceRepresentation:
 
         return pairwise_distances(X_eig)
     
-    def cvae_transform(self, y):
+    def cvae_transform(self):
         # Hyperparameters
         input_dim = self.D_input.shape[0]  # Adjust based on your adjacency matrix size
         hidden_dim = 100
         latent_dim = 10
-        learning_rate = 0.01
-        num_epochs = 150
+        learning_rate = 0.001
+        num_epochs = 300
 
         # losses = []
-
+        # X_eig = self.eig_transform()
         A = torch.tensor(self.D_input, dtype=torch.float)
+        # A = torch.tensor(X_eig, dtype=torch.float)
 
         # Initialize VAE model, optimizer, and data (dummy data used for illustration)
         vae = VAE(input_dim, hidden_dim, latent_dim)
@@ -74,7 +76,6 @@ class SubspaceRepresentation:
 
         # Dummy adjacency matrix data for illustration
         # A = torch.randint(0, 2, (input_dim, input_dim)).float()
-
         # Training loop
         for epoch in tqdm(range(1, num_epochs + 1)):
             vae.train()
@@ -102,23 +103,40 @@ class SubspaceRepresentation:
             # losses.append(loss.item())
             # print(f'Epoch {epoch + 1}, Loss: {loss.item()}')
             # Logging
-            if epoch % 10 == 0:
-                tqdm.write(f'Epoch: {epoch:03d}, Loss: {loss:.4f}')
+            # if epoch % 10 == 0:
+            #     tqdm.write(f'Epoch: {epoch:03d}, Loss: {loss:.4f}')
 
         # plt.plot(losses)
         # plt.savefig(f'losses_knn.eps', format='eps', bbox_inches='tight')
         # plt.savefig(f'losses_tsne.eps', format='eps', bbox_inches='tight')
         # plt.show()
 
-        vae.eval()
+        vae.encoder.eval()
         with torch.no_grad():
-            return vae.encoder(A)[0].numpy()
+            Z = vae.encoder(A)[2].numpy()
+
+        # Assume X is an (N, M) matrix, so X.T (transpose) will be (M, N)
+        N, M = Z.shape
+        param = 100
+
+        # Identity matrix of size N
+        I = np.eye(N)
+
+        # Matrix multiplication of X and its transpose (X @ X.T)
+        XXT = param * Z @ Z.T
+
+        # Solve the linear system (I + X @ X.T) \ (X @ X.T)
+        Z = np.linalg.solve(I + XXT, XXT)
+
+        plt.imshow(Z)
+        plt.show()
+        return Z
 
     def vae_transform(self):
 
         dims = [self.D_input.shape[0], 100, 10]
 
-        rng_ep = [1, 10, 50, 100]
+        rng_ep = [100] #[1, 10, 50, 100]
 
         for ep in rng_ep:
             pretrain_epochs = ep#100
@@ -139,15 +157,15 @@ class SubspaceRepresentation:
 
             loss = history.history['loss'][-1]
 
-            D = self.D_input
+            #D = self.D_input
 
-            Z = encoder.predict(D)[2]
-            Zs = np.sort(Z, axis=0)
-            autoexp = pairwise_distances(Zs) #Zs.dot(Zs.T)
+            Z = encoder.predict(self.D_input)[2]
+            # Zs = np.sort(Z, axis=0)
+            # autoexp = pairwise_distances(Zs) #Zs.dot(Zs.T)
             # autoexp[autoexp < 0] = 0
-            th = 0.4#np.median(autoexp)
-            autoexp[autoexp > th] = 1
-            autoexp[autoexp < th] = 0
+            # th = 0.4#np.median(autoexp)
+            # autoexp[autoexp > th] = 1
+            # autoexp[autoexp < th] = 0
             # autoexp = autoexp * 100
 
             # proj = TSNE(n_components=2).fit_transform(autoexp)

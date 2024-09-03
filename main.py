@@ -1,4 +1,6 @@
 # pip install oct2py
+import random
+
 import cv2
 from matplotlib import pyplot as plt
 from scipy.spatial.distance import squareform, pdist
@@ -16,6 +18,7 @@ import pandas as pd
 # from sklearn.datasets import make_blobs, load_digits
 from keras.datasets import cifar10
 from sklearn.metrics import pairwise_distances
+from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.neighbors import kneighbors_graph
 from sklearn.preprocessing import MinMaxScaler, binarize
 
@@ -32,6 +35,8 @@ import methods.Python.LRR.LRR as lrr
 import methods.Python.SSC.SSC as ssc
 import methods.Python.DSC_Net.main as dsc_net
 import methods.Python.DASC.main as dasc
+
+import datetime
 
 
 def fuzioned_distance_matrix(X, k):
@@ -91,18 +96,20 @@ def run_methods(method, X, name, X_img, X_input, X_last_layer, nmf_r, knn_k, y_t
         D = pairwise_distances(X)
         S = kneighbors_graph(D, n_neighbors=50, metric='precomputed').toarray()
 
-        plt.imshow(S)
-        plt.show()
+        # plt.imshow(S)
+        # plt.show()
 
         Z = SubspaceRepresentation(S).vae_transform()
 
     elif method == 'DGSSC':
-        D = MinMaxScaler().fit_transform(pairwise_distances(X))
+        # D = MinMaxScaler().fit_transform(pairwise_distances(X))
+        D = pairwise_distances(X)
+        # D = cosine_similarity(X)
         # S = kneighbors_graph(D, n_neighbors=5).toarray()
         # D = fuzioned_distance_matrix(X, k)
         # Dn, error = MatrixFactorization(None, D).nNMF(n_components=5)
         # print(error)
-        S = MatrixFactorization(None, D).similarity_graph(n_components=nmf_r, k=knn_k)
+        S = MatrixFactorization(None, D).similarity_graph(X, n_components=nmf_r, k=knn_k)
 
         # plt.gca().set_axis_off()
         # plt.imshow(Dn, cmap='hot')
@@ -113,8 +120,8 @@ def run_methods(method, X, name, X_img, X_input, X_last_layer, nmf_r, knn_k, y_t
         # plt.imshow(S)
         # plt.savefig(f'S_D_nNMF_rank_5_k_150.eps', format='eps', bbox_inches='tight')
         # plt.show()
+        Z = SubspaceRepresentation(S).cvae_transform()
 
-        Z = SubspaceRepresentation(S).cvae_transform(y_true)
     elif method == 'DGSSC_NMF':
         D = pairwise_distances(X)
         D_NMF = MatrixFactorization(None, D).NMF()
@@ -186,8 +193,8 @@ def _get_synthetic_data():
 # http://www.cad.zju.edu.cn/home/dengcai/Data/MNIST/2k2k.mat
 def _get_real_data():
     datasets = []
-    [datasets.append(data_tuple) for data_tuple in _get_image_data()]
-    # [datasets.append(data_tuple) for data_tuple in _get_bio_data()]
+    # [datasets.append(data_tuple) for data_tuple in _get_image_data()]
+    [datasets.append(data_tuple) for data_tuple in _get_bio_data()]
     # [datasets.append(data_tuple) for data_tuple in _get_text_data()]
     return datasets
 
@@ -281,11 +288,11 @@ def _get_bio_data():
     lymphoma_labels = np.sort(np.squeeze(data['Y'] - data['Y'].min() + 1))
 
     return [
-        (carcinom_df, carcinom_labels, None, None, None, 'Carcinom'),
+        # (carcinom_df, carcinom_labels, None, None, None, 'Carcinom'),
         (prostate_df, prostate_labels, None, None, None, 'Prostate_GE'),
-        (tox171_df, tox171_labels, None, None, None, 'TOX171'),
-        (lung_df, lung_labels, None, None, None, 'lung'),
-        (lymphoma_df, lymphoma_labels, None, None, None, 'lymphoma')
+        # (tox171_df, tox171_labels, None, None, None, 'TOX171'),
+        # (lung_df, lung_labels, None, None, None, 'lung'),
+        # (lymphoma_df, lymphoma_labels, None, None, None, 'lymphoma')
     ]
 
 
@@ -392,16 +399,16 @@ def _get_image_data():
     pixraw10P_last_layer = 200
 
     return [
-        # (cifar10_df, cifar10_labels, cifar10_img, cifar10_input, cifar10_last_layer, 'CIFAR10'),
-        # (usps_df, usps_labels, usps_img, usps_input, usps_last_layer, 'USPS'),
-        # (Yale_df, Yale_labels, Yale_img, Yale_input, Yale_last_layer, 'Yale'),
-        # (warpAR_df, warpAR_labels, warpAR_img, warpAR_input, warpAR_last_layer, 'WarpAR10P'),
+        (cifar10_df, cifar10_labels, cifar10_img, cifar10_input, cifar10_last_layer, 'CIFAR10'),
+        (usps_df, usps_labels, usps_img, usps_input, usps_last_layer, 'USPS'),
+        (Yale_df, Yale_labels, Yale_img, Yale_input, Yale_last_layer, 'Yale'),
+        (warpAR_df, warpAR_labels, warpAR_img, warpAR_input, warpAR_last_layer, 'WarpAR10P'),
         (pixraw10P_df, pixraw10P_labels, pixraw10P_img, pixraw10P_input, pixraw10P_last_layer, 'Pixraw10P'),
-        # (coil20_df, coil20_labels, coil20_img, coil20_input, coil20_last_layer, 'COIL20'),
-        # (mnist_df, mnist_labels, mnist_img, mnist_input, mnist_last_layer, 'MNIST'),
-        # (orl_df, orl_labels, orl_img, orl_input, orl_last_layer, 'ORL'),
-        # (YaleB_df, YaleB_labels, YaleB_img, YaleB_input, YaleB_last_layer, 'YaleB'),
-        # (coil100_df, coil100_labels, coil100_img, coil100_input, coil100_last_layer, 'COIL100')
+        (coil20_df, coil20_labels, coil20_img, coil20_input, coil20_last_layer, 'COIL20'),
+        (mnist_df, mnist_labels, mnist_img, mnist_input, mnist_last_layer, 'MNIST'),
+        (orl_df, orl_labels, orl_img, orl_input, orl_last_layer, 'ORL'),
+        (YaleB_df, YaleB_labels, YaleB_img, YaleB_input, YaleB_last_layer, 'YaleB'),
+        (coil100_df, coil100_labels, coil100_img, coil100_input, coil100_last_layer, 'COIL100')
     ]
 
 
@@ -411,7 +418,7 @@ if __name__ == "__main__":
         # 'LRR_L2',  # 2) 2012 (Python)
         # 'SSC',  # 3) 2013 (Python)
         # 'EDSC',  # 4) 2014 (Matlab)
-        # 'ENSC',  # 5) 2016 (Python)
+        # # 'ENSC',  # 5) 2016 (Python)
         # 'DSC_Net',  # 7) 2017 (Python)
         # 'DASC', # 8) 2018 (Python)
         # 'BDR',  # 9) 2018 (Matlab)
@@ -447,44 +454,55 @@ if __name__ == "__main__":
         print(f'------------------------------ {method} -------------------------------')
         for X, y_true, X_img, X_input, X_last_layer, name in datasets:
             print(f'------------------------------ data: {name} -------------------------------')
-
             # X = shuffle(X)
             k = len(np.unique(y_true))
 
             for knn_k in knn_k_candi:
                 for nmf_r in nmf_r_candi:
-                    for i in range(n_repeat):
-                        Z = run_methods(method, X, name, X_img, X_input, X_last_layer, nmf_r, knn_k, y_true)
+                    # if i == 0:
+                    #     print('------------------------------------------------------------')
+                    #     print('time before: ')
+                    #     print(datetime.datetime.now().time())
+                    #     print('------------------------------------------------------------')
 
-                        # if Z is not None:
-                        #     affinity = 'precomputed_nearest_neighbors'
+                    Z = run_methods(method, X, name, X_img, X_input, X_last_layer, nmf_r, knn_k, y_true)
 
-                        # print(f'************************************************* iter: {i}')
-                        model = ClusteringBenchmark(Z, k)
-                        y_pred = model.y_predict
-                        acc, nmi, ari = model.evaluate(y_true)
+                    # if i == 0:
+                    #     print('------------------------------------------------------------')
+                    #     print('time after: ')
+                    #     print(datetime.datetime.now().time())
+                    #     print('------------------------------------------------------------')
 
-                        result_df['name'].append(name)
-                        result_df['method_name'].append(method)
-                        result_df['knn_k'].append(knn_k)
-                        result_df['nmf_r'].append(nmf_r)
-                        result_df['acc'].append(acc)
-                        result_df['nmi'].append(nmi)
-                        result_df['ari'].append(ari)
+                    if Z is not None:
+                        for i in range(n_repeat):
+                            affinity = 'precomputed_nearest_neighbors'
 
-                        # result_df['y_true'].append(y_true)
-                        # result_df['y_pred'].append(y_pred)
+                            # print(f'************************************************* iter: {i}')
+                            model = ClusteringBenchmark(Z, k)
+                            y_pred = model.y_predict
+                            acc, nmi, ari = model.evaluate(y_true)
 
-            acc_mean = np.mean(result_df['acc'])
-            acc_std = np.std(result_df['acc'])
-            nmi_mean = np.mean(result_df['nmi'])
-            nmi_std = np.std(result_df['nmi'])
-            ari_mean = np.mean(result_df['ari'])
-            ari_std = np.std(result_df['ari'])
-            print(f'knn_k: {knn_k} - nmf_r: {nmf_r}')
-            print(f'acc: {acc_mean} (mean) - {acc_std} (std)')
-            print(f'nmi: {nmi_mean} (mean) - {nmi_std} (std)')
-            print(f'ari: {ari_mean} (mean) - {ari_std} (std)')
+                            result_df['name'].append(name)
+                            result_df['method_name'].append(method)
+                            result_df['knn_k'].append(knn_k)
+                            result_df['nmf_r'].append(nmf_r)
+                            result_df['acc'].append(acc)
+                            result_df['nmi'].append(nmi)
+                            result_df['ari'].append(ari)
+
+                            # result_df['y_true'].append(y_true)
+                            # result_df['y_pred'].append(y_pred)
+
+            # acc_mean = np.mean(result_df['acc'])
+            # acc_std = np.std(result_df['acc'])
+            # nmi_mean = np.mean(result_df['nmi'])
+            # nmi_std = np.std(result_df['nmi'])
+            # ari_mean = np.mean(result_df['ari'])
+            # ari_std = np.std(result_df['ari'])
+            # print(f'knn_k: {knn_k} - nmf_r: {nmf_r}')
+            # print(f'acc: {acc_mean} (mean) - {acc_std} (std)')
+            # print(f'nmi: {nmi_mean} (mean) - {nmi_std} (std)')
+            # print(f'ari: {ari_mean} (mean) - {ari_std} (std)')
 
     # pd.DataFrame(result_df).to_csv('params_sensibility.csv', sep=';')
-    # pd.DataFrame(result_df).to_csv('benchmark_ours.csv', sep=';')
+    pd.DataFrame(result_df).to_csv('benchmark.csv', sep=';')

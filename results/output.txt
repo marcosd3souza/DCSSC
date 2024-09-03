@@ -1,100 +1,33 @@
-0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.01s - Debugger warning: It seems that frozen modules are being used, which may
 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
 0.00s - to python to disable frozen modules.
 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
-2023-12-02 16:27:28.203569: E tensorflow/compiler/xla/stream_executor/cuda/cuda_dnn.cc:9342] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
-2023-12-02 16:27:28.203603: E tensorflow/compiler/xla/stream_executor/cuda/cuda_fft.cc:609] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
-2023-12-02 16:27:28.203609: E tensorflow/compiler/xla/stream_executor/cuda/cuda_blas.cc:1518] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
-2023-12-02 16:27:28.208395: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2024-08-29 17:10:26.285457: E tensorflow/compiler/xla/stream_executor/cuda/cuda_dnn.cc:9342] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2024-08-29 17:10:26.285525: E tensorflow/compiler/xla/stream_executor/cuda/cuda_fft.cc:609] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-08-29 17:10:26.285547: E tensorflow/compiler/xla/stream_executor/cuda/cuda_blas.cc:1518] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-08-29 17:10:26.448573: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: SSE4.1 SSE4.2 AVX AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
 /home/marcos/miniconda3/envs/subspace-clustering/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: 'libc10_cuda.so: cannot open shared object file: No such file or directory'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
   warn(
-newsgroup20
-(2000, 26214)
-20
-reuters
-(900, 18933)
-9
-TDT2
-(1900, 36771)
-19
-RCV1
-(400, 29992)
-4
 ------------------------------ DGSSC -------------------------------
------------------------------- data: CIFAR10 -------------------------------
-acc: 0.9036666666666666 (mean) - 0.0010749676997731411 (std)
-nmi: 0.8743235069655971 (mean) - 0.0009594415874474761 (std)
-ari: 0.8102633316190423 (mean) - 0.001839143785691335 (std)
------------------------------- data: USPS -------------------------------
-acc: 0.8986 (mean) - 0.005196793883411841 (std)
-nmi: 0.8700188927653036 (mean) - 0.00445173364676116 (std)
-ari: 0.8016224937002207 (mean) - 0.008875069882845544 (std)
------------------------------- data: Yale -------------------------------
-acc: 0.8865414141414143 (mean) - 0.019345421318419112 (std)
-nmi: 0.8697176774190953 (mean) - 0.006712264439835077 (std)
-ari: 0.7812222388731732 (mean) - 0.03219589502228067 (std)
------------------------------- data: WarpAR10P -------------------------------
-acc: 0.8392650349650348 (mean) - 0.0838249052175066 (std)
-nmi: 0.8403672579486129 (mean) - 0.05119654619676248 (std)
-ari: 0.7169256417621405 (mean) - 0.11488881570153764 (std)
------------------------------- data: Pixraw10P -------------------------------
-acc: 0.859212027972028 (mean) - 0.08505658062644704 (std)
-nmi: 0.8566403977038995 (mean) - 0.05636126545763925 (std)
-ari: 0.7472505993602814 (mean) - 0.11965569649145903 (std)
------------------------------- data: COIL20 -------------------------------
-acc: 0.8638958257791592 (mean) - 0.07847096181423091 (std)
-nmi: 0.8623988538938179 (mean) - 0.05313830227724481 (std)
-ari: 0.7549851645920288 (mean) - 0.1108229403613146 (std)
------------------------------- data: MNIST -------------------------------
-acc: 0.8622618982868984 (mean) - 0.07276043990117782 (std)
-nmi: 0.8580813847875144 (mean) - 0.05032056030311667 (std)
-ari: 0.7506794571774341 (mean) - 0.10314313086123933 (std)
------------------------------- data: ORL -------------------------------
-acc: 0.8530729110010359 (mean) - 0.07271545550980066 (std)
-nmi: 0.8606952932561314 (mean) - 0.047627305719635804 (std)
-ari: 0.7402322299580053 (mean) - 0.10059651114132388 (std)
------------------------------- data: YaleB -------------------------------
-acc: 0.8476791581784655 (mean) - 0.0712834291101987 (std)
-nmi: 0.862739690703248 (mean) - 0.04546950521547411 (std)
-ari: 0.7361867206007865 (mean) - 0.09640248201013815 (std)
------------------------------- data: COIL100 -------------------------------
-acc: 0.8398404090272856 (mean) - 0.07210055646697563 (std)
-nmi: 0.8662914487105701 (mean) - 0.044503150984242526 (std)
-ari: 0.731032760579165 (mean) - 0.0932132472079723 (std)
------------------------------- data: Carcinom -------------------------------
-acc: 0.8099210963292287 (mean) - 0.11696795772453229 (std)
-nmi: 0.8404961036551206 (mean) - 0.09195960049082536 (std)
-ari: 0.6949056479873934 (mean) - 0.14475121367264998 (std)
 ------------------------------ data: Prostate_GE -------------------------------
-acc: 0.8249440115044073 (mean) - 0.12257220589117009 (std)
-nmi: 0.847974357476834 (mean) - 0.09147142283069185 (std)
-ari: 0.7170618956414557 (mean) - 0.1568653247723004 (std)
------------------------------- data: TOX171 -------------------------------
-acc: 0.8280484832540307 (mean) - 0.11825394383845272 (std)
-nmi: 0.8396681098844895 (mean) - 0.09247448534239393 (std)
-ari: 0.7140833246786437 (mean) - 0.15106568651604066 (std)
------------------------------- data: lung -------------------------------
-acc: 0.79881067815179 (mean) - 0.15523588066076074 (std)
-nmi: 0.8142141710925251 (mean) - 0.12791968510302282 (std)
-ari: 0.6786176518547241 (mean) - 0.19375851687172302 (std)
------------------------------- data: lymphoma -------------------------------
-acc: 0.7772232996083372 (mean) - 0.1703468829742647 (std)
-nmi: 0.7985645022123716 (mean) - 0.1367557403070464 (std)
-ari: 0.6496732951039454 (mean) - 0.2162641252477679 (std)
------------------------------- data: newsgroup20 -------------------------------
-acc: 0.7841135100494829 (mean) - 0.167083257743244 (std)
-nmi: 0.804414316431039 (mean) - 0.134338172802123 (std)
-ari: 0.6588506662705211 (mean) - 0.21239392501975626 (std)
------------------------------- data: Reuters -------------------------------
-acc: 0.7897103188265286 (mean) - 0.1636343855352249 (std)
-nmi: 0.8070047123039654 (mean) - 0.13073973682389095 (std)
-ari: 0.6652455556685498 (mean) - 0.2076366097567452 (std)
------------------------------- data: TDT2 -------------------------------
-acc: 0.7949905447786609 (mean) - 0.16051847166092423 (std)
-nmi: 0.811521356276538 (mean) - 0.12842140551276088 (std)
-ari: 0.6722473753559483 (mean) - 0.20386410900579852 (std)
------------------------------- data: RCV1 -------------------------------
-acc: 0.8003857792639947 (mean) - 0.15790509495802477 (std)
-nmi: 0.8105197723939018 (mean) - 0.12506842702326607 (std)
-ari: 0.6764691295440665 (mean) - 0.1992335162849996 (std)
+  0%|          | 0/300 [00:00<?, ?it/s]  0%|          | 1/300 [00:00<00:37,  8.05it/s]  2%|▏         | 5/300 [00:00<00:12, 23.17it/s]  3%|▎         | 10/300 [00:00<00:08, 32.82it/s]  5%|▌         | 15/300 [00:00<00:07, 37.65it/s]  7%|▋         | 20/300 [00:00<00:07, 38.75it/s]  8%|▊         | 24/300 [00:00<00:07, 35.71it/s]  9%|▉         | 28/300 [00:01<00:11, 22.67it/s] 10%|█         | 31/300 [00:01<00:15, 17.41it/s] 11%|█▏        | 34/300 [00:01<00:13, 19.20it/s] 12%|█▏        | 37/300 [00:01<00:12, 20.37it/s] 13%|█▎        | 40/300 [00:01<00:13, 19.15it/s] 14%|█▍        | 43/300 [00:01<00:13, 19.60it/s] 15%|█▌        | 46/300 [00:02<00:13, 19.33it/s] 16%|█▋        | 49/300 [00:02<00:12, 19.85it/s] 17%|█▋        | 52/300 [00:02<00:11, 21.55it/s] 18%|█▊        | 55/300 [00:02<00:11, 21.01it/s] 19%|█▉        | 58/300 [00:02<00:10, 22.67it/s] 22%|██▏       | 66/300 [00:02<00:06, 34.77it/s] 23%|██▎       | 70/300 [00:02<00:06, 33.37it/s] 25%|██▍       | 74/300 [00:02<00:06, 34.50it/s] 26%|██▌       | 78/300 [00:03<00:07, 28.27it/s] 27%|██▋       | 82/300 [00:03<00:07, 29.56it/s] 30%|███       | 90/300 [00:03<00:05, 40.96it/s] 33%|███▎      | 99/300 [00:03<00:03, 52.00it/s] 35%|███▌      | 105/300 [00:03<00:03, 52.58it/s] 37%|███▋      | 111/300 [00:03<00:03, 51.48it/s] 39%|███▉      | 117/300 [00:03<00:03, 46.05it/s] 42%|████▏     | 125/300 [00:03<00:03, 53.26it/s] 44%|████▍     | 132/300 [00:04<00:02, 57.23it/s] 46%|████▌     | 138/300 [00:04<00:02, 54.26it/s] 48%|████▊     | 144/300 [00:04<00:03, 51.41it/s] 50%|█████     | 150/300 [00:04<00:03, 46.18it/s] 52%|█████▏    | 155/300 [00:04<00:03, 45.34it/s] 53%|█████▎    | 160/300 [00:04<00:03, 42.05it/s] 55%|█████▌    | 165/300 [00:04<00:03, 42.98it/s] 57%|█████▋    | 170/300 [00:04<00:02, 44.70it/s] 58%|█████▊    | 175/300 [00:05<00:02, 43.91it/s] 60%|██████    | 180/300 [00:05<00:02, 43.13it/s] 62%|██████▏   | 185/300 [00:05<00:03, 33.37it/s] 63%|██████▎   | 189/300 [00:05<00:03, 33.64it/s] 64%|██████▍   | 193/300 [00:05<00:03, 31.45it/s] 66%|██████▌   | 197/300 [00:05<00:03, 32.51it/s] 68%|██████▊   | 203/300 [00:05<00:02, 39.13it/s] 69%|██████▉   | 208/300 [00:06<00:02, 34.77it/s] 71%|███████   | 212/300 [00:06<00:02, 30.90it/s] 72%|███████▏  | 216/300 [00:06<00:02, 29.74it/s] 73%|███████▎  | 220/300 [00:06<00:02, 31.25it/s] 75%|███████▌  | 225/300 [00:06<00:02, 34.97it/s] 76%|███████▋  | 229/300 [00:06<00:02, 31.45it/s] 78%|███████▊  | 233/300 [00:06<00:02, 30.64it/s] 79%|███████▉  | 237/300 [00:07<00:02, 30.94it/s] 82%|████████▏ | 245/300 [00:07<00:01, 42.11it/s] 83%|████████▎ | 250/300 [00:07<00:01, 42.39it/s] 85%|████████▌ | 255/300 [00:07<00:01, 36.65it/s] 86%|████████▋ | 259/300 [00:07<00:01, 34.96it/s] 89%|████████▊ | 266/300 [00:07<00:00, 42.72it/s] 92%|█████████▏| 276/300 [00:07<00:00, 54.12it/s] 94%|█████████▍| 282/300 [00:07<00:00, 46.23it/s] 96%|█████████▌| 287/300 [00:08<00:00, 40.71it/s] 97%|█████████▋| 292/300 [00:08<00:00, 41.22it/s] 99%|█████████▉| 297/300 [00:08<00:00, 31.64it/s]100%|██████████| 300/300 [00:08<00:00, 34.73it/s]
+Traceback (most recent call last):
+  File "/home/marcos/projects/Experiments/subspace clustering/main.py", line 468, in <module>
+    Z = run_methods(method, X, name, X_img, X_input, X_last_layer, nmf_r, knn_k, y_true)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/marcos/projects/Experiments/subspace clustering/main.py", line 123, in run_methods
+    Z = SubspaceRepresentation(S).cvae_transform()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/marcos/projects/Experiments/subspace clustering/src/subspace.py", line 132, in cvae_transform
+    plt.show()
+  File "/home/marcos/miniconda3/envs/subspace-clustering/lib/python3.11/site-packages/matplotlib/pyplot.py", line 527, in show
+    return _get_backend_mod().show(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/marcos/miniconda3/envs/subspace-clustering/lib/python3.11/site-packages/matplotlib/backend_bases.py", line 3457, in show
+    cls.mainloop()
+  File "/home/marcos/miniconda3/envs/subspace-clustering/lib/python3.11/site-packages/matplotlib/backends/_backend_tk.py", line 523, in start_main_loop
+    first_manager.window.mainloop()
+  File "/home/marcos/miniconda3/envs/subspace-clustering/lib/python3.11/tkinter/__init__.py", line 1485, in mainloop
+    self.tk.mainloop(n)
+KeyboardInterrupt
