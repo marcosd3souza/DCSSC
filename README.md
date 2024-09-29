@@ -1,5 +1,5 @@
-# DGSSC
-Deep Generative Subspace Spectral Clustering based on Low-Rank Factorization and Variational Autoencoder
+# DCSSC
+Deep Contrastive Variational Subspace Clustering
 
 ### Install miniconda #################
 
