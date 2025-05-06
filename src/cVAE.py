@@ -90,12 +90,6 @@ def cvae_loss(recon_A, A, mu, logvar, encoder, margin=1.0):
     # Contrastive loss
     contrastive = contrastive_loss(encoder, A, margin)
 
-    # #normalize losses
-    # losses = torch.tensor([recon_loss, kl_loss, contrastive])
-    # recon_loss = (recon_loss - torch.min(losses)) / (torch.max(losses) - torch.min(losses))
-    # kl_loss = (kl_loss - torch.min(losses)) / (torch.max(losses) - torch.min(losses))
-    # contrastive = (contrastive - torch.min(losses)) / (torch.max(losses) - torch.min(losses))
-
     # Total loss
     return recon_loss + kl_loss + contrastive
 
@@ -121,19 +115,7 @@ def contrastive_loss(encoder, A, margin=1.0):
     contrastive_loss = torch.sum(torch.relu(positive_pairs - margin) + negative_pairs)
 
     return contrastive_loss
-
-    # loss = 0.0
-    # for pos_idx, neg_idx in zip(positive_pairs, negative_pairs):
-    #     z_pos = mu[pos_idx[0], pos_idx[1]]
-    #     z_neg = mu_inverse[neg_idx[0], neg_idx[1]]
-    #
-    #     pos_loss = F.mse_loss(z_pos, z_pos)
-    #     neg_loss = torch.clamp(margin - F.mse_loss(z_pos, z_neg), min=0.0)
-    #
-    #     loss += pos_loss + neg_loss
-    #
-    # return loss / (len(positive_pairs) + len(negative_pairs))
-
+    
 
 def test():
     # Hyperparameters

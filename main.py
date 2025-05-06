@@ -24,8 +24,8 @@ from sklearn.preprocessing import MinMaxScaler, binarize
 
 from methods.Python.EDESC.EDESC import EDESC_exec
 from methods.Python.ODSC.ODSC import ODSC_exec
-from src.factorization import MatrixFactorization
-from src.subspace import SubspaceRepresentation
+from src.graph import NeighborhoodGraph
+from src.embedding import SubspaceRepresentation
 from src.clustering import ClusteringBenchmark
 
 # from scipy.linalg import block_diag
@@ -109,7 +109,7 @@ def run_methods(method, X, name, X_img, X_input, X_last_layer, nmf_r, knn_k, y_t
         # D = fuzioned_distance_matrix(X, k)
         # Dn, error = MatrixFactorization(None, D).nNMF(n_components=5)
         # print(error)
-        S = MatrixFactorization(None, D).similarity_graph(X, n_components=nmf_r, k=knn_k)
+        S = NeighborhoodGraph(None, D).similarity_graph(X, n_components=nmf_r, k=knn_k)
 
         # plt.gca().set_axis_off()
         # plt.imshow(Dn, cmap='hot')

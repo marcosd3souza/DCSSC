@@ -34,28 +34,7 @@ import torch
 class SubspaceRepresentation:
     def __init__(self, D_input):
         self.D_input = D_input
-        self.losses = []
-        # torch.manual_seed(10)
-        # self.D_original = D_original
-    
-    def eig_transform(self, n_vals=10):
-        # # # Graph Laplacian.
-        L = sparse.csgraph.laplacian(csgraph=self.D_input, normed=True)
-        # graph_laplacian = graph_laplacian_s.toarray()
-
-        eigenvals, eigenvcts = np.linalg.eig(L)
-
-        vals = eigenvals.real
-        vecs = eigenvcts.real
-
-        positive = np.where(vals>0)
-
-        vals_index = np.argsort(vals[positive])[0:n_vals]
-        temp = vecs[:, vals_index]
-
-        X_eig = np.sort(temp, axis=0)
-
-        return pairwise_distances(X_eig)
+        self.losses = []    
     
     def cvae_transform(self):
         # Hyperparameters

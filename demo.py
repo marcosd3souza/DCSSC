@@ -3,8 +3,8 @@ from sklearn.metrics import pairwise_distances
 from sklearn.datasets import make_blobs, make_circles, make_classification
 from sklearn.preprocessing import MinMaxScaler
 
-from src.factorization import MatrixFactorization
-from src.subspace import SubspaceRepresentation
+from src.graph import NeighborhoodGraph
+from src.embedding import SubspaceRepresentation
 from src.clustering import ClusteringBenchmark
 
 import matplotlib.pyplot as plt
